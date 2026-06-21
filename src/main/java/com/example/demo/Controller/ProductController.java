@@ -3,9 +3,14 @@ package com.example.demo.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.example.demo.Models.Product;
 import com.example.demo.Services.ProductService;
 
@@ -13,9 +18,32 @@ import com.example.demo.Services.ProductService;
 public class ProductController {
     @Autowired
     ProductService service;
-    @RequestMapping("/getProduct")
-    public List<Product> getProductService(){
-        return service.getProducts();
 
+    @GetMapping("/Product")
+    public List<Product> getProductService() {
+        return service.getProducts();
+    }
+
+    @GetMapping("/getProduct/{prodId}")
+    public Product getProduct(@PathVariable int prodId) {
+        return service.getProductById(prodId);
+    }
+    @PostMapping("/Product")
+    public void addProduct(@RequestBody Product prod){
+        System.out.println(prod.toString());
+        try{
+            service.addProduct(prod);
+            }
+            catch(Exception e){
+                System.out.println(e);
+            }
+    }
+    @PutMapping("/Product")
+    public void updateProduct(@RequestBody Product prod){
+        service.updateProduct(prod);
+    }
+    @DeleteMapping("/Product")
+    public void deleteProduct(@RequestBody Product prod){
+        service.deleteProduct(prod);
     }
 }
