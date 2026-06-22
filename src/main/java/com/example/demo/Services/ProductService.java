@@ -4,52 +4,46 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Models.Product;
+import com.example.demo.Repository.ProductRepo;
+
 
 @Service
 public class ProductService {
-    List<Product> products = new ArrayList<>(Arrays.asList(
-            new Product(101, "Lg", "tv", 10000),
-            new Product(102, "Classmate", "Book", 100),
-            new Product(103, "Tupperware", "Bottle", 999)));
+    @Autowired
+    ProductRepo repo;
+    // List<Product> products = new ArrayList<>(Arrays.asList(
+    //         new Product(101, "Lg", "tv", 10000),
+    //         new Product(102, "Classmate", "Book", 100),
+    //         new Product(103, "Tupperware", "Bottle", 999)));
 
     public List<Product> getProducts() {
         System.out.println("Running");
-        return products;
+        return repo.findAll();
     }
 
-    public Product getProductById(int prodId) {
-        Product pod;
-        try{
-        pod= products.stream().filter(p -> p.getProdId() == prodId).findFirst().orElse(new Product(100,"No-Item","",0));
-        }catch(NoSuchElementException e){
-            System.out.println("Not found in records");
-            return null;
-        }
-        return pod;
+    public Product getProductById(Long prodId) {
+        return repo.findById(prodId).orElse(new Product());
     }
-    public void addProduct(Product prod){
-        products.add(prod);
+
+    public void addProduct(Product prod) {
+        repo.save(prod);
     }
 
     public void updateProduct(Product prod) {
-        for(int i=0;i<products.size();i++){
-            if(products.get(i).getProdId()==prod.getProdId()){
-                products.set(i,prod);
-                return;
-            }
-        }    
+        repo.save(prod);
     }
 
     public void deleteProduct(Product prod) {
-        for(int i=0;i<products.size();i++){
-            if(products.get(i).getProdId()==prod.getProdId()){
-                products.remove(i);
-                return;
-            }
-        }  
+        repo.delete(prod);
+    }
+
+    public void deleteProduct(Long prodId) {
+        repo.deleteById(prodId);
     }
 }
