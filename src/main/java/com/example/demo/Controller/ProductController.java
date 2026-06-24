@@ -3,6 +3,7 @@ package com.example.demo.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import com.example.demo.Models.Product;
 import com.example.demo.Services.ProductService;
 
 @RestController
+@CrossOrigin
 public class ProductController {
     @Autowired
     ProductService service;
@@ -49,5 +51,9 @@ public class ProductController {
     @DeleteMapping("/Product/{prodId}")
     public void deleteProduct(@PathVariable Long prodId){
         service.deleteProduct(prodId);
+    }
+    @GetMapping("/ProductExample")
+    public Product getProductExample() {
+        return new Product(1, "Product 1", "Type 1", "Description 1", "Category 1", new java.util.Date(), 100L, 10, true);
     }
 }
