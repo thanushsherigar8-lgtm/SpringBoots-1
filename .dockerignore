@@ -1,0 +1,6 @@
+react/
+.idx
+.gitignore
+target
+src/test
+# Keep application.properties and other resources needed for the Spring Boot build
