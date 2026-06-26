@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.Models.Product;
 import com.example.demo.Services.ProductService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @CrossOrigin
@@ -36,16 +36,18 @@ public class ProductController {
         return service.getProductById(prodId);
     }
     @PostMapping("/Product")
-    public ResponseEntity<?> addProduct(@RequestPart Product prod,@RequestPart MultipartFile imagefile){
-        System.out.println(prod.toString());
-        try{
-            Product prod1=service.addProduct(prod,imagefile);
-            return new ResponseEntity<>(prod1,HttpStatus.CREATED);
-            }
-            catch(Exception e){
-                System.out.println(e);
-                return new ResponseEntity<>(e.getMessage(),HttpStatus.FAILED_DEPENDENCY));
-            }
+    public ResponseEntity<?> addProduct(@RequestPart("prod") String prodJson,
+                                        @RequestPart(value = "imagefile", required = false) MultipartFile imagefile) {
+        try {
+            Product prod = new ObjectMapper().readValue(prodJson, Product.class);
+            Product prod1 = imagefile != null && !imagefile.isEmpty()
+                    ? service.addProduct(prod, imagefile)
+                    : service.addProduct(prod);
+            return new ResponseEntity<>(prod1, HttpStatus.CREATED);
+        } catch (Exception e) {
+            System.out.println(e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FAILED_DEPENDENCY);
+        }
     }
     @PutMapping("/Product")
     public void updateProduct(@RequestBody Product prod){
