@@ -3,6 +3,8 @@ package com.example.demo.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.demo.Models.Product;
 import com.example.demo.Services.ProductService;
 
@@ -31,13 +36,15 @@ public class ProductController {
         return service.getProductById(prodId);
     }
     @PostMapping("/Product")
-    public void addProduct(@RequestBody Product prod){
+    public ResponseEntity<?> addProduct(@RequestPart Product prod,@RequestPart MultipartFile imagefile){
         System.out.println(prod.toString());
         try{
-            service.addProduct(prod);
+            Product prod1=service.addProduct(prod,imagefile);
+            return new ResponseEntity<>(prod1,HttpStatus.CREATED);
             }
             catch(Exception e){
                 System.out.println(e);
+                return new ResponseEntity<>(e.getMessage(),HttpStatus.FAILED_DEPENDENCY));
             }
     }
     @PutMapping("/Product")
@@ -54,6 +61,6 @@ public class ProductController {
     }
     @GetMapping("/ProductExample")
     public Product getProductExample() {
-        return new Product(1, "Product 1", "Type 1", "Description 1", "Category 1", new java.util.Date(), 100L, 10, true);
+        return new Product(1, "Product 1", "Type 1", "Description 1", "Category 1", new java.util.Date(), 100L, 10, true, "image.jpg", new byte[0]);
     }
 }

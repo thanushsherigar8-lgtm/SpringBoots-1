@@ -2,6 +2,8 @@ package com.example.demo.Models;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,10 +31,13 @@ public class Product {
     private String Category;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date prodDate;
     private Long price;
     private Integer quantity;
     private boolean availability;
+    private String imageName;
+    private byte[] imageData;
 
     public Product() {
     }
