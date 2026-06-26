@@ -33,13 +33,16 @@ public class ProductService {
         return repo.save(prod);
     }
     public Product addProduct(Product prod, MultipartFile imageFile) throws IOException {
-        prod.setImageName(imageFile.getOriginalFilename() != null ? imageFile.getOriginalFilename() : "uploaded-image");
+        try{prod.setImageName(imageFile.getOriginalFilename() != null ? imageFile.getOriginalFilename() : "uploaded-image");
         prod.setImageData(imageFile.getBytes());
         return repo.save(prod);
+        } catch (IOException e) {
+            throw new IOException("Error occurred while processing the image file", e);
+        }
     }
 
-    public void updateProduct(Product prod) {
-        repo.save(prod);
+    public Product updateProduct(Product prod) {
+        return repo.save(prod);
     }
 
     public void deleteProduct(Product prod) {
